@@ -14,7 +14,7 @@ import uuid
 import cv2
 import time
 from crnn_plate_recognition.demo import init_model,cv_imread,get_plate_result
-# from crnn_plate_recognition.filtered import filter,analys
+from crnn_plate_recognition.filtered import filter
 
 router = Router()
 
@@ -54,7 +54,7 @@ def Recognize_Plate_CRNN(request,file: UploadedFile = File(...)):
         return {
             "message" : "success",
             # "detail_plat": analys(filter(plate)),
-            "data" : plate,
+            "data" : filter(plate),
             "plat_detect": json_boxes
         }
     except BaseException as err:
