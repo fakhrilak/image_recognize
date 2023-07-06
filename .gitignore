@@ -1,0 +1,39 @@
+RECOGNIZE/img/*
+DARKNET/img/*
+YOLOV5/img/*
+myenv/
+# .gitignore
+# 首先忽略所有的文件
+*
+# 但是不忽略目录
+!*/
+# 忽略一些指定的目录名
+ut/
+crnn_plate_recognition/runs/
+crnn_plate_recognition/.vscode/
+crnn_plate_recognition/build/
+crnn_plate_recognition/result1/
+crnn_plate_recognition/output/
+crnn_plate_recognition/color_model/
+crnn_plate_recognition/color_model_small/
+crnn_plate_recognition/pretrainde_model/
+crnn_plate_recognition/demoMy.py
+crnn_plate_recognition/get_every_provice_number.py
+crnn_plate_recognition/get_train_less_data.py
+redtest.py
+# 不忽略下面指定的文件类型
+!*.cpp
+!*.h
+!*.hpp
+!*.c
+!.gitignore
+!*.py
+!*.sh
+!*.npy
+!*.jpg
+!*.pth
+!*.npy
+!*.txt
+!*.md
+!*.yaml
+!*.png
