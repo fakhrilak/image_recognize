@@ -18,7 +18,7 @@ from crnn_plate_recognition.demo import init_model,cv_imread,get_plate_result
 from crnn_plate_recognition.filtered import filter
 from crnn_plate_recognition.body_schema import CorrectImg,MyCommand,DemoPredict as BodyDemo
 from datetime import datetime
-
+import subprocess
 router = Router()
 
 
@@ -35,7 +35,7 @@ path=""
 for i in splited[1:-1]:
     path += "/"+i
 
-crnn = init_model(device,path+"/saved_model/best_1.pth")
+crnn = init_model(device,path+"/saved_model/learn3.pth")
 @router.post("/crnn/recognize")
 def Recognize_Plate_CRNN(request,file: UploadedFile = File(...)):
     try:
@@ -126,10 +126,15 @@ def getListImageFolder(request,trueorfalse:str):
 @router.post("/mycmd")
 def CommandLine(request,command:MyCommand):
     try:
-        commands = os.listdir(command.command)
+        commands = command.command.split(" ")
+        process = subprocess.Popen(commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+
+        # Print the output
+        # print(out.decode("utf-8").split("\n"),"ini")
         return JsonResponse({
             "message" : "success",
-            "data" : commands
+            "data" : out.decode("utf-8").split("\n")
         })
     except BaseException as err:
         return JsonResponse({
@@ -149,6 +154,7 @@ def DemoPrediction(request,data:BodyDemo):
             "data" : plate
         })
     except BaseException as err:
+        print(str(err))
         return JsonResponse({
             "message" : "Internal Server Error",
             "data" : str(err)

@@ -34,12 +34,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "https://example.com",
-#     "https://sub.example.com",
-#     "http://localhost:3000",
-#     "http://192.168.110.219:3011",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    # "https://example.com",
+    # "https://sub.example.com",
+    "http://localhost:3000",
+    # "http://192.168.110.219:3011",
+    "http://lpr-triner.zilog.online"
+]
 CORS_ORIGIN_ALLOW_ALL = True
 # Application definition
 # MIDDLEWARE = [  # Or MIDDLEWARE_CLASSES on Django < 1.10

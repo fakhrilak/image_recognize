@@ -34,41 +34,53 @@
 # print(result)
 
 
-from PIL import Image, ImageDraw, ImageFont
+# from PIL import Image, ImageDraw, ImageFont
 
-# Define the text content and desired font size
-text = "A"
-font_size = 32
+# # Define the text content and desired font size
+# text = "A"
+# font_size = 32
 
-# Create a blank image with a white background
-background_color = (255, 255, 255)
-image_width = 35
-image_height = 35
-image = Image.new("RGB", (image_width, image_height), background_color)
+# # Create a blank image with a white background
+# background_color = (255, 255, 255)
+# image_width = 35
+# image_height = 35
+# image = Image.new("RGB", (image_width, image_height), background_color)
 
-# Specify the font and create a font object
-font = ImageFont.truetype("font/HindSiliguri-Medium.ttf", font_size)
+# # Specify the font and create a font object
+# font = ImageFont.truetype("font/HindSiliguri-Medium.ttf", font_size)
 
-# Create a draw object
-draw = ImageDraw.Draw(image)
+# # Create a draw object
+# draw = ImageDraw.Draw(image)
 
-# Calculate the text size
-text_width, text_height = draw.textsize(text, font=font)
+# # Calculate the text size
+# text_width, text_height = draw.textsize(text, font=font)
 
-# Calculate the position to center the text
-text_x = (image_width - text_width) // 2
-text_y = (image_height - text_height) // 2
+# # Calculate the position to center the text
+# text_x = (image_width - text_width) // 2
+# text_y = (image_height - text_height) // 2
 
-# Draw the text on the image
-text_color = (255, 255, 255)  # Black
-draw.text((text_x, text_y), text, font=font, fill=text_color)
+# # Draw the text on the image
+# text_color = (255, 255, 255)  # Black
+# draw.text((text_x, text_y), text, font=font, fill=text_color)
 
-# Save the image
-image.save("letter_image.jpg")
+# # Save the image
+# image.save("letter_image.jpg")
 
-# from PIL import Image
+# # from PIL import Image
 
 # import pytesseract
 # # print("hello world")
 # print(pytesseract.image_to_string(Image.open('a.png')))
 # print("= Done")
+
+import subprocess
+
+command = ["ls", "-l", "/"]  # Replace with your desired command
+
+# Execute the command and capture the output
+process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+out, err = process.communicate()
+
+# print(out)
+# Print the output
+print(type(out),out.decode("utf-8").split("\n"),"ini")

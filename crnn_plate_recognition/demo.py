@@ -1,4 +1,5 @@
 from crnn_plate_recognition.plateNet import myNet_ocr
+# from plateNet import myNet_ocr
 import torch
 import torch.nn as nn
 import cv2
@@ -7,7 +8,9 @@ import os
 import time
 import argparse
 from crnn_plate_recognition.alphabets import plate_chr
+# from alphabets import plate_chr
 from crnn_plate_recognition.LPRNet import build_lprnet
+# from LPRNet import build_lprnet
 def cv_imread(path):   #读取中文路径的图片
     img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),-1)
     return img
