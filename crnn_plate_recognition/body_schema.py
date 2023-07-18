@@ -10,3 +10,7 @@ class MyCommand(Schema):
 class DemoPredict(Schema):
     model :str
     img : str
+    
+class Comparation2Models(Schema):
+    newModel :str
+    lastModel : str

@@ -16,7 +16,7 @@ import cv2
 import time
 from crnn_plate_recognition.demo import init_model,cv_imread,get_plate_result
 from crnn_plate_recognition.filtered import filter
-from crnn_plate_recognition.body_schema import CorrectImg,MyCommand,DemoPredict as BodyDemo
+from crnn_plate_recognition.body_schema import CorrectImg,MyCommand,Comparation2Models,DemoPredict as BodyDemo
 from datetime import datetime
 import subprocess
 router = Router()
@@ -35,7 +35,7 @@ path=""
 for i in splited[1:-1]:
     path += "/"+i
 
-crnn = init_model(device,path+"/saved_model/learn3.pth")
+crnn = init_model(device,path+"/saved_model/learn4_4.pth")
 @router.post("/crnn/recognize")
 def Recognize_Plate_CRNN(request,file: UploadedFile = File(...)):
     try:
@@ -91,18 +91,18 @@ def CorectValue(request,data:CorrectImg):
     try:
         dt = datetime.now()
         dt_str = dt.strftime('%Y-%m-%d-%H:%M:%S')
-        # "/data/BACKEND/LPR_IMG/v1/IMG_PREDICT/no_crop/"+file.name
-        # MOVE NO CROP
-        # os.system("mv /data/BACKEND/LPR_IMG/v1/IMG_PREDICT/no_crop/"+data.name+\
-        #           " /data/BACKEND/LPR_IMG/v1/IMG_WRONG/no_crop/"+data.name)
-        # MOVE CROP
-        os.system("mv /data/BACKEND/LPR_IMG/true/"+data.name+\
-                  "  /data/BACKEND/LPR_IMG/false/"+data.correct+"_"+dt_str+".png")
-        return JsonResponse({
-            "message" : "success",
-            "command"  : "mv true/"+data.name+\
-                  "  false/"+data.correct+"_"+dt_str+".png"
-        })
+        if(os.path.isfile("/data/BACKEND/LPR_IMG/true/"+data.name)):
+            os.system("mv /data/BACKEND/LPR_IMG/true/"+data.name+\
+                    "  /data/BACKEND/LPR_IMG/false/"+data.correct+"_"+dt_str+".png")
+            return JsonResponse({
+                "message" : "success",
+                "command"  : "mv true/"+data.name+\
+                    "  false/"+data.correct+"_"+dt_str+".png"
+            },status=200)
+        else:
+            return JsonResponse({
+                "message" : "File not Found"
+            },status=406)
     except BaseException as err:
         print(str(err),"== ERROR DI ENDPOINT CORRECT")
         return JsonResponse({
@@ -152,6 +152,37 @@ def DemoPrediction(request,data:BodyDemo):
         return JsonResponse({
             "message" : "success",
             "data" : plate
+        })
+    except BaseException as err:
+        print(str(err))
+        return JsonResponse({
+            "message" : "Internal Server Error",
+            "data" : str(err)
+        })
+        
+@router.post("/comparasion")
+def DemoPrediction(request,data:Comparation2Models):
+    try:
+        listImage = os.listdir("/data/BACKEND/LPR_IMG/crnn_model_4/")
+        modelA = init_model(device,path+"/saved_model/"+data.newModel)
+        modelB = init_model(device,path+"/saved_model/"+data.lastModel)
+        wrongTrueInLastModel = []
+        for i in listImage:
+            img = cv_imread("/data/BACKEND/LPR_IMG/crnn_model_4/"+i)
+            img = cv2.cvtColor(img,cv2.COLOR_BGRA2BGR)
+            plateModelA=get_plate_result(img, device,modelA, (48,168))
+            img = cv_imread("/data/BACKEND/LPR_IMG/crnn_model_4/"+i)
+            img = cv2.cvtColor(img,cv2.COLOR_BGRA2BGR)
+            plateModelB=get_plate_result(img, device,modelB, (48,168))
+            if plateModelA != plateModelB:
+                wrongTrueInLastModel.append({"name":i,"newModelPredict":plateModelA,"lastModelPredict":plateModelB})
+                dt = datetime.now()
+                dt_str = dt.strftime('%Y-%m-%d-%H:%M:%S')
+                os.system("cp /data/BACKEND/LPR_IMG/crnn_model_4/"+i+\
+                        "  /data/crnn_plate_recognition/image/train/"+plateModelB+"_fix_from_"+data.lastModel+"_to_"+data.newModel+".png")
+        return JsonResponse({
+            "message" : "success",
+            "data" : wrongTrueInLastModel
         })
     except BaseException as err:
         print(str(err))
